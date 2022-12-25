@@ -12,7 +12,7 @@ NUMBER_OF_POSTS: int = 10
 
 def index(request):
     posts = Post.objects.all().order_by('-pub_date')
-    paginator = Paginator (posts, NUMBER_OF_POSTS)
+    paginator = Paginator(posts, NUMBER_OF_POSTS)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
