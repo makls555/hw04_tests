@@ -35,7 +35,7 @@ class PostFormTests(TestCase):
             'group': self.group.id,
         }
         response = self.authorized_user.post(
-            reverse('posts:create'),
+            reverse('posts:post_create'),
             data=form_data,
             follow=True
         )
@@ -64,7 +64,7 @@ class PostFormTests(TestCase):
         }
         response = self.authorized_user.post(
             reverse(
-                'posts:edit',
+                'posts:post_edit',
                 args=[post.id]),
             data=form_data,
             follow=True
@@ -87,11 +87,11 @@ class PostFormTests(TestCase):
             'group': self.group.id,
         }
         response = self.guest_user.post(
-            reverse('posts:create'),
+            reverse('posts:post_create'),
             data=form_data,
             follow=True
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        redirect = reverse('login') + '?next=' + reverse('posts:create')
+        redirect = reverse('login') + '?next=' + reverse('posts:post_create')
         self.assertRedirects(response, redirect)
         self.assertEqual(Post.objects.count(), posts_count)

@@ -37,8 +37,8 @@ class PostPagesTests(TestCase):
     def test_forms_show_correct(self):
         """Проверка коректности формы."""
         context = {
-            reverse('posts:create'),
-            reverse('posts:edit', kwargs={'post_id': self.post.id, }),
+            reverse('posts:post_create'),
+            reverse('posts:post_edit', kwargs={'post_id': self.post.id, }),
         }
         for reverse_page in context:
             with self.subTest(reverse_page=reverse_page):

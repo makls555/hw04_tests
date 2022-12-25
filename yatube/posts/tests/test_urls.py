@@ -55,10 +55,10 @@ class StaticURLTests(TestCase):
                 'posts:post_detail',
                 kwargs={'post_id': self.post.id}): HTTPStatus.OK,
             reverse(
-                'posts:edit',
+                'posts:post_edit',
                 kwargs={'post_id': self.post.id}): HTTPStatus.FOUND,
             reverse(
-                'posts:create'): HTTPStatus.FOUND,
+                'posts:post_create'): HTTPStatus.FOUND,
             '/unexisting_page/': HTTPStatus.NOT_FOUND,
         }
         for url, response_code in field_urls_code.items():
@@ -84,10 +84,10 @@ class StaticURLTests(TestCase):
                 'posts:post_detail',
                 kwargs={'post_id': self.post.id}): HTTPStatus.OK,
             reverse(
-                'posts:edit',
+                'posts:post_edit',
                 kwargs={'post_id': self.post.id}): HTTPStatus.FOUND,
             reverse(
-                'posts:create'): HTTPStatus.OK,
+                'posts:post_create'): HTTPStatus.OK,
             '/unexisting_page/': HTTPStatus.NOT_FOUND,
         }
         for url, response_code in field_urls_code.items():
@@ -113,10 +113,10 @@ class StaticURLTests(TestCase):
                 'posts:post_detail',
                 kwargs={'post_id': self.post.id}): HTTPStatus.OK,
             reverse(
-                'posts:edit',
+                'posts:post_edit',
                 kwargs={'post_id': self.post.id}): HTTPStatus.OK,
             reverse(
-                'posts:create'): HTTPStatus.OK,
+                'posts:post_create'): HTTPStatus.OK,
             '/unexisting_page/': HTTPStatus.NOT_FOUND,
         }
         for url, response_code in field_urls_code.items():
@@ -139,10 +139,10 @@ class StaticURLTests(TestCase):
                 'posts:post_detail',
                 kwargs={'post_id': self.post.id}): 'posts/post_detail.html',
             reverse(
-                'posts:edit',
+                'posts:post_edit',
                 kwargs={'post_id': self.post.id}): 'posts/post_create.html',
             reverse(
-                'posts:create'): 'posts/post_create.html',
+                'posts:post_create'): 'posts/post_create.html',
         }
         for adress, template in templates_url_names.items():
             with self.subTest(adress=adress):
