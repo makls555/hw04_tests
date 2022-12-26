@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
+from django.http.response import HttpResponse
 from django.urls import reverse
 
 from ..models import Group, Post
@@ -81,6 +82,49 @@ class PostPagesTests(TestCase):
                 'posts:post_detail',
                 kwargs={'post_id': self.post.id}))
         self.check_post_info(response.context['post'])
+
+    def test_create_post_show_correct_context(self):
+        """Шаблон post_create сформирован с правильным контекстом."""
+        response = self.authorized_client.get(reverse('posts:post_create'))
+        self._check_correct_form_from_context(response)
+
+    def test_new_post_show_on_different_page(self):
+        """Новый пост выводится на главной, в выбранной группе,
+        и в профайле автора. Не выводится в других группах.
+        """
+        form_data = {
+            'text': 'new_post',
+            'group': self.group.id
+        }
+        url_names_assert_method = {
+            reverse('posts:index'): self.assertEqual,
+            reverse('posts:group_list',
+                    args=[self.group.slug]): self.assertEqual,
+            reverse('posts:profile',
+                    args=[self.post.author]): self.assertEqual,
+
+        }
+        self.authorized_client.post(
+            reverse('posts:post_create'),
+            data=form_data
+        )
+        new_post = Post.objects.latest('id')
+        for address, assert_method in url_names_assert_method.items():
+            with self.subTest(address=address):
+                response = self.authorized_client.get(address, follow=True)
+                last_post_on_page = response.context.get('page_obj')[0]
+                assert_method(last_post_on_page, new_post)
+
+    def _check_correct_form_from_context(self, response: HttpResponse) -> None:
+        """Проверяем корректность формы передаваемой в контексте."""
+        form_fields = {
+            'text': forms.fields.CharField,
+            'group': forms.fields.ChoiceField
+        }
+        for value, expected in form_fields.items():
+            with self.subTest(value=value):
+                form_field = response.context.get('form').fields.get(value)
+                self.assertIsInstance(form_field, expected)
 
 
 class PaginatorViewsTest(TestCase):

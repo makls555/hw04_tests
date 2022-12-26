@@ -79,7 +79,7 @@ class StaticURLTests(TestCase):
                 kwargs={'slug': 'bad_slug'}): HTTPStatus.NOT_FOUND,
             reverse(
                 'posts:profile',
-                kwargs={'username': self.user_author}): HTTPStatus.OK,
+                kwargs={'username': self.post.author}): HTTPStatus.OK,
             reverse(
                 'posts:post_detail',
                 kwargs={'post_id': self.post.id}): HTTPStatus.OK,
