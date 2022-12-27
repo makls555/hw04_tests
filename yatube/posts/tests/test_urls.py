@@ -19,21 +19,21 @@ class StaticURLTests(TestCase):
             description='Тестовое описание группы',
         )
 
-        cls.author = User.objects.create_user(
-            username='author')
+        cls.user_author = User.objects.create_user(
+            username='user_author')
         cls.another_user = User.objects.create_user(
             username='another_user')
 
         cls.post = Post.objects.create(
             text='Текст который просто больше 15 символов...',
-            author=cls.author,
+            author=cls.user_author,
             group=cls.group,
         )
 
     def setUp(self):
         self.unauthorized_user = Client()
         self.post_author = Client()
-        self.post_author.force_login(self.author)
+        self.post_author.force_login(self.user_author)
         self.authorized_user = Client()
         self.authorized_user.force_login(self.another_user)
 
@@ -50,7 +50,7 @@ class StaticURLTests(TestCase):
                 kwargs={'slug': 'bad_slug'}): HTTPStatus.NOT_FOUND,
             reverse(
                 'posts:profile',
-                kwargs={'username': self.author}): HTTPStatus.OK,
+                kwargs={'username': self.post.author.username}): HTTPStatus.OK,
             reverse(
                 'posts:post_detail',
                 kwargs={'post_id': self.post.id}): HTTPStatus.OK,
@@ -79,7 +79,7 @@ class StaticURLTests(TestCase):
                 kwargs={'slug': 'bad_slug'}): HTTPStatus.NOT_FOUND,
             reverse(
                 'posts:profile',
-                kwargs={'username': self.author}): HTTPStatus.OK,
+                kwargs={'username': self.post.author.username}): HTTPStatus.OK,
             reverse(
                 'posts:post_detail',
                 kwargs={'post_id': self.post.id}): HTTPStatus.OK,
@@ -108,7 +108,7 @@ class StaticURLTests(TestCase):
                 kwargs={'slug': 'bad_slug'}): HTTPStatus.NOT_FOUND,
             reverse(
                 'posts:profile',
-                kwargs={'username': self.author}): HTTPStatus.OK,
+                kwargs={'username': self.post.author.username}): HTTPStatus.OK,
             reverse(
                 'posts:post_detail',
                 kwargs={'post_id': self.post.id}): HTTPStatus.OK,
@@ -134,7 +134,8 @@ class StaticURLTests(TestCase):
                 kwargs={'slug': self.group.slug}): 'posts/group_list.html',
             reverse(
                 'posts:profile',
-                kwargs={'username': self.author}): 'posts/profile.html',
+                kwargs={'username': self.post.author.username}):
+                    'posts/profile.html',
             reverse(
                 'posts:post_detail',
                 kwargs={'post_id': self.post.id}): 'posts/post_detail.html',
